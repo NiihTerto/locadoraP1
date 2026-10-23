@@ -2,5 +2,9 @@
 {% extends "locacao/base.html" %}
 {% block conteudo %}
 <h1 class="h3">Reservas</h1>
-<!-- TODO: tabela com filtro por status (RF14) -->
+{% if reservas %}
+  <!-- TODO P1: tabela de reservas com filtro por status (RF14) -->
+{% else %}
+  <div class="alert alert-info">Nenhuma reserva para exibir.</div>
+{% endif %}
 {% endblock %}

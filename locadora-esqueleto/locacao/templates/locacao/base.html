@@ -18,10 +18,17 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="menu">
-        <ul class="navbar-nav me-auto">
+
+                <ul class="navbar-nav me-auto">
           <li class="nav-item"><a class="nav-link" href="{% url 'painel' %}">Painel</a></li>
-          {# TODO: ligar Veículos, Clientes, Reservas e Locações quando eu confirmar os nomes das rotas #}
+          {% url 'veiculo_lista' as url_veiculos %}
+          {% if url_veiculos %}<li class="nav-item"><a class="nav-link" href="{{ url_veiculos }}">Veículos</a></li>{% endif %}
+          {% url 'cliente_lista' as url_clientes %}
+          {% if url_clientes %}<li class="nav-item"><a class="nav-link" href="{{ url_clientes }}">Clientes</a></li>{% endif %}
+          <li class="nav-item"><a class="nav-link" href="{% url 'reserva_lista' %}">Reservas</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'locacao_lista' %}">Locações</a></li>
         </ul>
+        
         <span class="navbar-text me-3">{{ user.get_username }}</span>
         <form method="post" action="{% url 'logout' %}" class="d-inline">
           {% csrf_token %}
