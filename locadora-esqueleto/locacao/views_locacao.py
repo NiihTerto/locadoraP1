@@ -1,6 +1,28 @@
-"""DONO: P9 - Grupo 3 (Telas)
-TODO: UC04 - registrar retirada (de reserva e de balcão). UC05 - registrar devolução com
-prévia do extrato e confirmação. Capture RegraNegocioError.
-"""
-from django.contrib.auth.decorators import login_required  # noqa: F401
-from django.shortcuts import render  # noqa: F401
+"""DONO: P9 - Grupo 3 (Telas)"""
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+
+from .forms_locacao import DevolucaoForm, RetiradaForm
+
+
+@login_required
+def retirada(request, pk):
+    if request.method == "POST":
+        form = RetiradaForm(request.POST)
+        if form.is_valid():
+            messages.success(request, "Formulário válido (ainda não grava nada).")
+    else:
+        form = RetiradaForm()
+    return render(request, "locacao/retirada_form.html", {"form": form})
+
+
+@login_required
+def devolucao(request, pk):
+    if request.method == "POST":
+        form = DevolucaoForm(request.POST)
+        if form.is_valid():
+            messages.success(request, "Formulário válido (ainda não grava nada).")
+    else:
+        form = DevolucaoForm()
+    return render(request, "locacao/devolucao_form.html", {"form": form})

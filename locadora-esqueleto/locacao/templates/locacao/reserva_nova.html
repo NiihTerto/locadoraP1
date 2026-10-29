@@ -3,4 +3,29 @@
 {% block conteudo %}
 <h1 class="h3">Nova reserva</h1>
 <!-- TODO: escolher cliente e confirmar -->
+<div class="card mb-4">
+  <div class="card-body">
+    <h2 class="h5">{{ veiculo.marca }} {{ veiculo.modelo }} · {{ veiculo.placa }}</h2>
+    <p class="mb-1">Categoria: {{ veiculo.categoria.nome }}</p>
+    <p class="mb-1">Retirada: {{ retirada|date:"d/m/Y H:i" }}</p>
+    <p class="mb-1">Devolução: {{ devolucao|date:"d/m/Y H:i" }}</p>
+    <p class="mb-0">
+      {{ diarias }} diária(s) × R$ {{ veiculo.categoria.valor_diaria|floatformat:2 }}
+      = <strong>R$ {{ valor_estimado|floatformat:2 }}</strong>
+    </p>
+  </div>
+</div>
+
+<form method="post" class="card card-body">
+  {% csrf_token %}
+  <label class="form-label" for="{{ form.cliente.id_for_label }}">{{ form.cliente.label }}</label>
+  {{ form.cliente }}
+  {% for erro in form.cliente.errors %}
+    <div class="text-danger small">{{ erro }}</div>
+  {% endfor %}
+  <div class="d-flex gap-2 mt-3">
+    <button type="submit" class="btn btn-primary">Confirmar reserva</button>
+    <a class="btn btn-outline-secondary" href="{% url 'disponibilidade' %}?{{ consulta }}">Voltar à busca</a>
+  </div>
+</form>
 {% endblock %}

@@ -2,5 +2,15 @@
 {% extends "locacao/base.html" %}
 {% block conteudo %}
 <h1 class="h3">Registrar devolução</h1>
-<!-- TODO: dados da devolução e prévia do extrato antes de confirmar -->
+<form method="post" class="card card-body" style="max-width: 480px">
+  {% csrf_token %}
+  {% for campo in form %}
+    <div class="mb-3">
+      <label class="form-label" for="{{ campo.id_for_label }}">{{ campo.label }}</label>
+      {{ campo }}
+      {% for erro in campo.errors %}<div class="text-danger small">{{ erro }}</div>{% endfor %}
+    </div>
+  {% endfor %}
+  <button class="btn btn-primary" type="submit">Registrar devolução</button>
+</form>
 {% endblock %}

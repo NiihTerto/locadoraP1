@@ -1,6 +1,60 @@
 <!-- DONO: P8 - Grupo 3 (Telas) -->
 {% extends "locacao/base.html" %}
 {% block conteudo %}
-<h1 class="h3">Disponibilidade</h1>
+<h1 class="h3 mb-4">Disponibilidade</h1>
 <!-- TODO: formulário de busca e lista de veículos livres -->
+
+<form method="get" class="card-body mb-4">
+    {% for erro in form.non_field_errors %}
+        <div class="alert alert-danger">{{ erro }}</div>
+    {% endfor %}
+    <div class="row g-3 align-items-end">
+    {% for campo in form %}
+      <div class="col-12 col-md-3">
+        <label class="form-label" for="{{ campo.id_for_label }}">{{ campo.label }}</label>
+        {{ campo }}
+        {% for erro in campo.errors %}
+          <div class="text-danger small">{{ erro }}</div>
+        {% endfor %}
+      </div>
+    {% endfor %}
+    <div class="col-12 col-md-3">
+      <button type="submit" class="btn btn-primary w-100">Buscar</button>
+    </div>
+  </div>
+</form>
+
+{% if veiculos is not None %}
+  {% if veiculos %}
+    <h2 class="h5">{{ veiculos|length }} veículo(s) livre(s) no período</h2>
+    <div class="table-responsive">
+      <table class="table table-striped align-middle bg-white">
+        <thead>
+          <tr>
+            <th>Veículo</th>
+            <th>Placa</th>
+            <th>Categoria</th>
+            <th class="text-end">Diária</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for veiculo in veiculos %}
+            <tr>
+              <td>{{ veiculo.marca }} {{ veiculo.modelo }}</td>
+              <td>{{ veiculo.placa }}</td>
+              <td>{{ veiculo.categoria.nome }}</td>
+              <td class="text-end">R$ {{ veiculo.categoria.valor_diaria|floatformat:2 }}</td>
+              <td class="text-end">
+                <a class="btn btn-sm btn-primary" href="{% url 'reserva_nova' veiculo.pk %}?{{ consulta }}">Reservar</a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="alert alert-warning">Nenhum veículo livre nesse período.</div>
+  {% endif %}
+{% endif %}
 {% endblock %}

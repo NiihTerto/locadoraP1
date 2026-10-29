@@ -3,4 +3,22 @@
 {% block conteudo %}
 <h1 class="h3">Reserva criada</h1>
 <!-- TODO: mostrar o código da reserva -->
+ <div class="alert alert-success">
+  Reserva confirmada! Código: <strong>{{ reserva.codigo }}</strong>
+</div>
+
+<div class="card mb-4">
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item"><strong>Cliente:</strong> {{ reserva.cliente.nome }}</li>
+    <li class="list-group-item"><strong>Veículo:</strong> {{ reserva.veiculo.marca }} {{ reserva.veiculo.modelo }} ({{ reserva.veiculo.placa }})</li>
+    <li class="list-group-item"><strong>Retirada:</strong> {{ reserva.retirada_prevista|date:"d/m/Y H:i" }}</li>
+    <li class="list-group-item"><strong>Devolução:</strong> {{ reserva.devolucao_prevista|date:"d/m/Y H:i" }}</li>
+    <li class="list-group-item"><strong>Valor estimado:</strong> R$ {{ reserva.valor_estimado|floatformat:2 }}</li>
+  </ul>
+</div>
+<a class="btn btn-primary" href="{% url 'disponibilidade' %}">Nova busca</a>
+<div class="d-flex gap-2">
+  <a class="btn btn-primary" href="{% url 'disponibilidade' %}">Nova busca</a>
+  <a class="btn btn-outline-danger" href="{% url 'reserva_cancelar' reserva.pk %}">Cancelar reserva</a>
+</div>
 {% endblock %}

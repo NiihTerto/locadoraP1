@@ -1,0 +1,36 @@
+<!-- DONO: P8 - Grupo 3 (Telas) -->
+{% extends "locacao/base.html" %}
+{% block conteudo %}
+<h1 class="h3 mb-4">Cancelar reserva</h1>
+
+<div class="card mb-4">
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item"><strong>Código:</strong> {{ reserva.codigo }}</li>
+    <li class="list-group-item"><strong>Cliente:</strong> {{ reserva.cliente.nome }}</li>
+    <li class="list-group-item"><strong>Veículo:</strong> {{ reserva.veiculo.marca }} {{ reserva.veiculo.modelo }} ({{ reserva.veiculo.placa }})</li>
+    <li class="list-group-item"><strong>Retirada:</strong> {{ reserva.retirada_prevista|date:"d/m/Y H:i" }}</li>
+    <li class="list-group-item"><strong>Valor estimado:</strong> R$ {{ reserva.valor_estimado|floatformat:2 }}</li>
+    <li class="list-group-item"><strong>Status:</strong> {{ reserva.status }}</li>
+  </ul>
+</div>
+
+{% if pode_cancelar %}
+  {% if multa > 0 %}
+    <div class="alert alert-warning">
+      Faltam menos de 24 h para a retirada: o cancelamento gera multa de
+      <strong>R$ {{ multa|floatformat:2 }}</strong> (RN11).
+    </div>
+  {% else %}
+    <div class="alert alert-success">Cancelamento sem multa.</div>
+  {% endif %}
+
+  <form method="post" class="d-flex gap-2">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Confirmar cancelamento</button>
+    <a class="btn btn-outline-secondary" href="{% url 'reserva_confirmacao' reserva.codigo %}">Manter reserva</a>
+  </form>
+{% else %}
+  <div class="alert alert-secondary">Esta reserva não pode mais ser cancelada.</div>
+  <a class="btn btn-outline-secondary" href="{% url 'disponibilidade' %}">Voltar</a>
+{% endif %}
+{% endblock %}
