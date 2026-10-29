@@ -1,35 +1,45 @@
 """DONO: P1 - Grupo 1 (Fundação)
-TODO (todas com @login_required, exceto o login):
-  painel(request)        RF15: livres, em andamento, atrasadas, manutenção, faturado hoje,
-                         retiradas e devoluções do dia
-  reserva_lista / reserva_detalhe      RF14 (filtro por status)
-  locacao_lista / locacao_detalhe      RF14 (filtro por status)
-O login e o logout usam as views prontas do Django (django.contrib.auth.views).
-Chame operacoes.atualizar_status_temporais() no início das telas.
+Versão parcial: painel de veículos e telas de reservas (RF14/RF15).
+As partes de locação entram quando o Locacao do P3 estiver alinhado.
 """
-
-
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 
-# TODO P1: quando models e operacoes dos colegas estiverem na develop,
-# trocar os valores vazios abaixo por consultas reais e chamar
-# operacoes.atualizar_status_temporais() no início de cada view.
+from .enums import StatusReserva, StatusVeiculo
+from .models import Reserva, Veiculo
+
+# TODO P1: chamar operacoes.atualizar_status_temporais() no início das telas
+# quando o P8 corrigir a função.
 
 
 @login_required
 def painel(request):
-    return render(request, "locacao/painel.html", {})
+    cartoes = [
+        ("Veículos livres", Veiculo.objects.filter(status=StatusVeiculo.DISPONIVEL).count(), "success"),
+        ("Veículos locados", Veiculo.objects.filter(status=StatusVeiculo.LOCADO).count(), "primary"),
+        ("Em manutenção", Veiculo.objects.filter(status=StatusVeiculo.MANUTENCAO).count(), "warning"),
+        ("Reservas ativas", Reserva.objects.filter(status=StatusReserva.ATIVA).count(), "info"),
+    ]
+    return render(request, "locacao/painel.html", {"cartoes": cartoes})
 
 
 @login_required
 def reserva_lista(request):
-    return render(request, "locacao/reserva_lista.html", {"reservas": []})
+    status = request.GET.get("status", "")
+    reservas = Reserva.objects.select_related("cliente", "veiculo").order_by("-retirada_prevista")
+    if status in StatusReserva.values:
+        reservas = reservas.filter(status=status)
+    return render(request, "locacao/reserva_lista.html", {
+        "reservas": reservas,
+        "status_atual": status,
+        "status_opcoes": StatusReserva.choices,
+    })
 
 
 @login_required
 def reserva_detalhe(request, pk):
-    return render(request, "locacao/reserva_detalhe.html", {"reserva": None})
+    reserva = get_object_or_404(Reserva.objects.select_related("cliente", "veiculo"), pk=pk)
+    return render(request, "locacao/reserva_detalhe.html", {"reserva": reserva})
 
 
 @login_required

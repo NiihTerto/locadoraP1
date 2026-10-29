@@ -2,9 +2,33 @@
 {% extends "locacao/base.html" %}
 {% block conteudo %}
 <h1 class="h3">Reservas</h1>
-{% if reservas %}
-  <!-- TODO P1: tabela de reservas com filtro por status (RF14) -->
-{% else %}
-  <div class="alert alert-info">Nenhuma reserva para exibir.</div>
-{% endif %}
+<form method="get" class="row g-2 mb-3">
+  <div class="col-auto">
+    <select name="status" class="form-select">
+      <option value="">Todos os status</option>
+      {% for valor, nome in status_opcoes %}
+        <option value="{{ valor }}" {% if valor == status_atual %}selected{% endif %}>{{ nome }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-auto"><button class="btn btn-primary">Filtrar</button></div>
+</form>
+<div class="table-responsive">
+<table class="table table-striped bg-white">
+  <thead><tr><th>Código</th><th>Cliente</th><th>Veículo</th><th>Retirada</th><th>Devolução</th><th>Status</th></tr></thead>
+  <tbody>
+  {% for r in reservas %}
+    <tr>
+      <td><a href="{% url 'reserva_detalhe' r.pk %}">{{ r.codigo }}</a></td>
+      <td>{{ r.cliente }}</td><td>{{ r.veiculo }}</td>
+      <td>{{ r.retirada_prevista|date:"d/m/Y H:i" }}</td>
+      <td>{{ r.devolucao_prevista|date:"d/m/Y H:i" }}</td>
+      <td>{{ r.get_status_display }}</td>
+    </tr>
+  {% empty %}
+    <tr><td colspan="6" class="text-muted">Nenhuma reserva encontrada.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
 {% endblock %}

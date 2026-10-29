@@ -1,6 +1,15 @@
 <!-- DONO: P1 - Grupo 1 (Fundação) -->
 {% extends "locacao/base.html" %}
 {% block conteudo %}
-<h1 class="h3">Painel do dia</h1>
-<div class="alert alert-info">Painel em construção.</div>
+<h1 class="h3 mb -4">Painel do dia</h1>
+<div class="row g-3">
+    {% for titulo, valor, cor in cartoes %}
+    <div class="col-6 col-lg-3">
+    <div class="card border-{{ cor }} h-100"><div class="card-body">
+      <div class="text-muted small">{{ titulo }}</div>
+      <div class="display-6">{{ valor }}</div>
+    </div></div>
+  </div>
+  {% endfor %}
+</div>
 {% endblock %}
